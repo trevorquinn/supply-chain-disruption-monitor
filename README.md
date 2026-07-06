@@ -6,7 +6,7 @@ An MCP server exposing supply chain intelligence tools, with a PydanticAI agent 
 
 The agent calls multiple tools, synthesizes the results, and produces a structured risk assessment — demonstrating that the value is in the reasoning across sources, not any single data lookup.
 
-Built as a self-training project and portfolio artifact. See `projects/supply-chain-mcp/project-plan.md` for design rationale.
+Built as a self-training project and portfolio artifact.
 
 ---
 
