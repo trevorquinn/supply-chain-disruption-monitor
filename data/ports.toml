@@ -1,0 +1,226 @@
+# Canonical port list — major container ports on key trade routes.
+# Each [ports.<key>] is one port. The key is the common short name used for lookup.
+# Fields: name, locode (UN/LOCODE), country, lat, lon, region.
+
+# --- East Asia ---
+[ports.Shanghai]
+name = "Shanghai"
+locode = "CNSHA"
+country = "China"
+lat = 31.23
+lon = 121.47
+region = "East Asia"
+
+[ports.Ningbo]
+name = "Ningbo-Zhoushan"
+locode = "CNNGB"
+country = "China"
+lat = 29.87
+lon = 121.55
+region = "East Asia"
+
+[ports.Shenzhen]
+name = "Shenzhen (Yantian/Shekou)"
+locode = "CNSZX"
+country = "China"
+lat = 22.54
+lon = 114.06
+region = "East Asia"
+
+[ports.Guangzhou]
+name = "Guangzhou (Nansha)"
+locode = "CNGZH"
+country = "China"
+lat = 22.81
+lon = 113.31
+region = "East Asia"
+
+[ports.Qingdao]
+name = "Qingdao"
+locode = "CNTAO"
+country = "China"
+lat = 36.07
+lon = 120.38
+region = "East Asia"
+
+[ports.Tianjin]
+name = "Tianjin"
+locode = "CNTXG"
+country = "China"
+lat = 39.02
+lon = 117.72
+region = "East Asia"
+
+[ports.Busan]
+name = "Busan"
+locode = "KRPUS"
+country = "South Korea"
+lat = 35.10
+lon = 129.04
+region = "East Asia"
+
+[ports.Tokyo]
+name = "Tokyo / Yokohama"
+locode = "JPTYO"
+country = "Japan"
+lat = 35.45
+lon = 139.64
+region = "East Asia"
+
+# --- Southeast Asia ---
+[ports.Singapore]
+name = "Singapore"
+locode = "SGSIN"
+country = "Singapore"
+lat = 1.26
+lon = 103.82
+region = "Southeast Asia"
+
+[ports."Port Klang"]
+name = "Port Klang"
+locode = "MYPKG"
+country = "Malaysia"
+lat = 3.0
+lon = 101.39
+region = "Southeast Asia"
+
+[ports."Tanjung Pelepas"]
+name = "Tanjung Pelepas"
+locode = "MYPTP"
+country = "Malaysia"
+lat = 1.36
+lon = 103.55
+region = "Southeast Asia"
+
+[ports."Ho Chi Minh City"]
+name = "Ho Chi Minh City (Cat Lai)"
+locode = "VNSGN"
+country = "Vietnam"
+lat = 10.76
+lon = 106.63
+region = "Southeast Asia"
+
+# --- South Asia ---
+[ports.Colombo]
+name = "Colombo"
+locode = "LKCMB"
+country = "Sri Lanka"
+lat = 6.95
+lon = 79.84
+region = "South Asia"
+
+[ports."Nhava Sheva"]
+name = "Nhava Sheva (Mumbai)"
+locode = "INNSA"
+country = "India"
+lat = 18.96
+lon = 72.95
+region = "South Asia"
+
+# --- Middle East ---
+[ports."Jebel Ali"]
+name = "Jebel Ali"
+locode = "AEJEA"
+country = "UAE"
+lat = 24.98
+lon = 55.06
+region = "Middle East"
+
+# --- East Africa / Red Sea ---
+[ports."Port Said"]
+name = "Port Said"
+locode = "EGPSD"
+country = "Egypt"
+lat = 31.26
+lon = 32.30
+region = "Red Sea"
+
+[ports.Suez]
+name = "Suez"
+locode = "EGSUZ"
+country = "Egypt"
+lat = 29.97
+lon = 32.54
+region = "Red Sea"
+
+# --- Europe ---
+[ports.Rotterdam]
+name = "Rotterdam"
+locode = "NLRTM"
+country = "Netherlands"
+lat = 51.93
+lon = 4.14
+region = "Northwest Europe"
+
+[ports.Antwerp]
+name = "Antwerp"
+locode = "BEANR"
+country = "Belgium"
+lat = 51.23
+lon = 4.42
+region = "Northwest Europe"
+
+[ports.Hamburg]
+name = "Hamburg"
+locode = "DEHAM"
+country = "Germany"
+lat = 53.55
+lon = 10.0
+region = "Northwest Europe"
+
+[ports.Felixstowe]
+name = "Felixstowe"
+locode = "GBFXT"
+country = "UK"
+lat = 51.96
+lon = 1.35
+region = "Northwest Europe"
+
+[ports.Barcelona]
+name = "Barcelona"
+locode = "ESBCN"
+country = "Spain"
+lat = 41.34
+lon = 2.17
+region = "Mediterranean"
+
+[ports.Piraeus]
+name = "Piraeus"
+locode = "GRPIR"
+country = "Greece"
+lat = 37.94
+lon = 23.63
+region = "Mediterranean"
+
+[ports."Gioia Tauro"]
+name = "Gioia Tauro"
+locode = "ITGIT"
+country = "Italy"
+lat = 38.43
+lon = 15.90
+region = "Mediterranean"
+
+# --- North America ---
+[ports."Los Angeles"]
+name = "Los Angeles / Long Beach"
+locode = "USLAX"
+country = "USA"
+lat = 33.73
+lon = -118.26
+region = "North America West"
+
+[ports."New York"]
+name = "New York / New Jersey"
+locode = "USNYC"
+country = "USA"
+lat = 40.66
+lon = -74.07
+region = "North America East"
+
+[ports.Savannah]
+name = "Savannah"
+locode = "USSAV"
+country = "USA"
+lat = 31.98
+lon = -81.10
+region = "North America East"

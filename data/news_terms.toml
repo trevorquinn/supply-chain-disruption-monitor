@@ -1,0 +1,29 @@
+# Tuning lists for the disruption-news tool. Edit freely to adjust signal detection.
+
+# Default search terms to bias news queries toward supply chain disruption signals.
+supply_chain_terms = [
+    "port congestion",
+    "shipping delay",
+    "supply chain disruption",
+    "cargo vessel",
+    "freight",
+    "logistics disruption",
+]
+
+# High-signal terms scanned in article text to flag likely disruption events.
+alert_terms = [
+    "blocked",
+    "closed",
+    "strike",
+    "storm",
+    "attack",
+    "seized",
+    "grounded",
+    "aground",
+    "congestion",
+    "delay",
+    "disruption",
+    "suspended",
+    "banned",
+    "sanctions",
+]

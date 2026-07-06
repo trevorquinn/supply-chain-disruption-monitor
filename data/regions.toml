@@ -1,0 +1,20 @@
+# Bounding boxes for major shipping regions, used to filter the live AIS vessel feed.
+# Each region maps to a list of boxes; each box is [min_lat, min_lon, max_lat, max_lon].
+# (A list allows a single region to span multiple boxes if ever needed.)
+
+[regions]
+"south china sea" = [[0.0, 100.0, 25.0, 125.0]]
+"east china sea" = [[24.0, 119.0, 40.0, 133.0]]
+"strait of malacca" = [[0.8, 99.5, 6.5, 104.5]]
+"indian ocean" = [[-20.0, 55.0, 20.0, 90.0]]
+"red sea" = [[11.0, 32.0, 30.0, 45.0]]
+"suez canal" = [[29.8, 32.2, 31.6, 32.7]]
+"mediterranean" = [[30.0, -6.0, 46.0, 36.0]]
+"english channel" = [[48.5, -5.5, 51.5, 2.5]]
+"north sea" = [[51.0, -2.0, 61.0, 10.0]]
+"persian gulf" = [[22.0, 48.0, 30.0, 60.0]]
+"taiwan strait" = [[21.5, 119.0, 26.5, 123.0]]
+"east asia" = [[20.0, 110.0, 40.0, 145.0]]
+"northwest europe" = [[48.0, -5.0, 61.0, 12.0]]
+"north america west" = [[20.0, -130.0, 50.0, -100.0]]
+"north america east" = [[20.0, -82.0, 50.0, -60.0]]

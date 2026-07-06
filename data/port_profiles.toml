@@ -1,0 +1,175 @@
+# Base congestion profiles per port, keyed by UN/LOCODE (the `locode` field in ports.toml).
+# Represents relative typical load used by the (mocked) congestion tool.
+#   base_util      — typical capacity utilization, 0.0 (empty) to 1.0 (at capacity)
+#   volatility     — day-to-day swing applied to base_util
+#   typical_wait_h — baseline berth wait in hours
+#   berths         — number of berths
+
+# --- Major East Asian hubs — typically highly loaded ---
+[profiles.CNSHA]
+base_util = 0.82
+volatility = 0.15
+typical_wait_h = 36
+berths = 52
+
+[profiles.CNNGB]
+base_util = 0.79
+volatility = 0.12
+typical_wait_h = 28
+berths = 40
+
+[profiles.CNSZX]
+base_util = 0.76
+volatility = 0.14
+typical_wait_h = 24
+berths = 35
+
+[profiles.CNGZH]
+base_util = 0.74
+volatility = 0.11
+typical_wait_h = 20
+berths = 30
+
+[profiles.CNTAO]
+base_util = 0.70
+volatility = 0.10
+typical_wait_h = 18
+berths = 25
+
+[profiles.CNTXG]
+base_util = 0.68
+volatility = 0.10
+typical_wait_h = 16
+berths = 22
+
+[profiles.KRPUS]
+base_util = 0.72
+volatility = 0.09
+typical_wait_h = 20
+berths = 30
+
+[profiles.JPTYO]
+base_util = 0.65
+volatility = 0.08
+typical_wait_h = 12
+berths = 28
+
+# --- Southeast Asia ---
+[profiles.SGSIN]
+base_util = 0.85
+volatility = 0.08
+typical_wait_h = 24
+berths = 60
+
+[profiles.MYPKG]
+base_util = 0.72
+volatility = 0.10
+typical_wait_h = 18
+berths = 25
+
+[profiles.MYPTP]
+base_util = 0.68
+volatility = 0.09
+typical_wait_h = 14
+berths = 18
+
+[profiles.VNSGN]
+base_util = 0.65
+volatility = 0.12
+typical_wait_h = 22
+berths = 15
+
+# --- South Asia ---
+[profiles.LKCMB]
+base_util = 0.73
+volatility = 0.14
+typical_wait_h = 30
+berths = 20
+
+[profiles.INNSA]
+base_util = 0.78
+volatility = 0.15
+typical_wait_h = 48
+berths = 22
+
+# --- Middle East ---
+[profiles.AEJEA]
+base_util = 0.75
+volatility = 0.09
+typical_wait_h = 20
+berths = 67
+
+# --- Red Sea / Suez ---
+[profiles.EGPSD]
+base_util = 0.88
+volatility = 0.20
+typical_wait_h = 60
+berths = 40
+
+[profiles.EGSUZ]
+base_util = 0.85
+volatility = 0.22
+typical_wait_h = 72
+berths = 30
+
+# --- Europe ---
+[profiles.NLRTM]
+base_util = 0.77
+volatility = 0.09
+typical_wait_h = 22
+berths = 85
+
+[profiles.BEANR]
+base_util = 0.76
+volatility = 0.10
+typical_wait_h = 20
+berths = 60
+
+[profiles.DEHAM]
+base_util = 0.74
+volatility = 0.11
+typical_wait_h = 24
+berths = 50
+
+[profiles.GBFXT]
+base_util = 0.71
+volatility = 0.10
+typical_wait_h = 18
+berths = 35
+
+[profiles.ESBCN]
+base_util = 0.68
+volatility = 0.10
+typical_wait_h = 16
+berths = 30
+
+[profiles.GRPIR]
+base_util = 0.72
+volatility = 0.12
+typical_wait_h = 20
+berths = 45
+
+[profiles.ITGIT]
+base_util = 0.65
+volatility = 0.11
+typical_wait_h = 14
+berths = 25
+
+# --- North America ---
+[profiles.USLAX]
+base_util = 0.80
+volatility = 0.14
+typical_wait_h = 72
+berths = 70
+
+[profiles.USNYC]
+base_util = 0.75
+volatility = 0.11
+typical_wait_h = 36
+berths = 55
+
+[profiles.USSAV]
+base_util = 0.78
+volatility = 0.10
+typical_wait_h = 28
+berths = 30
