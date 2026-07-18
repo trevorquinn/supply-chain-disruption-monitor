@@ -120,7 +120,7 @@ async def run_query(query: str) -> str:
     async with toolset:
         result = await agent.run(query)
 
-    return result.data
+    return result.output
 
 
 async def main() -> None:
