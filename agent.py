@@ -31,9 +31,10 @@ if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
 
-from pydantic_ai import Agent
+from pydantic_ai import Agent, UsageLimits
 from pydantic_ai.models.openai import OpenAIChatModel
-from pydantic_ai.providers.openai import OpenAIProvider
+from pydantic_ai.profiles.openai import OpenAIModelProfile
+from pydantic_ai.providers.ollama import OllamaProvider
 from pydantic_ai.mcp import MCPToolset, StdioTransport
 
 # ---------------------------------------------------------------------------
@@ -43,11 +44,12 @@ from pydantic_ai.mcp import MCPToolset, StdioTransport
 def build_model() -> OpenAIChatModel:
     base_url = os.getenv("OLLAMA_BASE_URL", "http://localhost:11434/v1")
     model_name = os.getenv("OLLAMA_MODEL", "qwen2.5:7b")
-    provider = OpenAIProvider(
-        base_url=base_url,
-        api_key="ollama",  # Ollama ignores the key but the field is required
-    )
-    return OpenAIChatModel(model_name, provider=provider)
+    provider = OllamaProvider(base_url=base_url)
+    # Ollama's OpenAI-compat endpoint silently ignores `max_completion_tokens`
+    # (the OpenAI o-series field pydantic-ai maps `max_tokens` to by default)
+    # and only honors the legacy `max_tokens` field, so force that mapping.
+    profile = OpenAIModelProfile(openai_chat_supports_max_completion_tokens=False)
+    return OpenAIChatModel(model_name, provider=provider, profile=profile)
 
 
 # ---------------------------------------------------------------------------
@@ -73,12 +75,19 @@ You are a supply chain disruption analyst. Your job is to assess risk on
 shipping routes by synthesizing data from multiple sources.
 
 When given a route (e.g. Shanghai to Rotterdam), follow this process:
-1. Use list_major_ports() to identify key waypoints and chokepoints on the route.
-2. Check weather at the origin and destination ports.
-3. Check vessel traffic density at the major chokepoints.
-4. Search for recent disruption news related to the route and key waypoints.
-5. Check congestion at the key ports.
+1. Use list_major_ports() to identify the chokepoints on the route (e.g. straits,
+   canals). This is a reference lookup, not a checklist — do not call other
+   tools for every port it returns.
+2. Check weather at exactly the origin and destination ports (2 calls total).
+3. Check vessel traffic at up to 2 chokepoints directly on the route.
+4. Run at most 3 targeted news searches covering the route's chokepoints and
+   ports of most concern.
+5. Check congestion at exactly the origin port, destination port, and any
+   chokepoint ports identified in step 1 — not ports outside the route.
 6. Synthesize into a structured risk assessment.
+
+Call each tool at most once per port or query — never repeat an identical
+call. Stay within roughly 10-12 tool calls total for a single assessment.
 
 Be specific. Cite the data you retrieved. Flag any tool errors clearly rather
 than inventing data. If a tool returns an error about a missing API key, note
@@ -101,7 +110,12 @@ def build_agent(toolset: MCPToolset) -> Agent:
         model=build_model(),
         toolsets=[toolset],
         system_prompt=SYSTEM_PROMPT,
-        model_settings={"temperature": 0.1},  # lower temp = more consistent tool use
+        model_settings={
+            "temperature": 0.1,  # lower temp = more consistent tool use
+            "max_tokens": 1024,  # bounds worst-case generation length if the model loops
+            "frequency_penalty": 0.4,  # discourages repeating near-identical tool calls
+            "parallel_tool_calls": False,  # one call per turn, not a batch a loop can inflate
+        },
     )
 
 
@@ -117,8 +131,13 @@ async def run_query(query: str) -> str:
     print(f"Query: {query}")
     print(f"{'='*70}\n")
 
+    tool_calls_limit = int(os.getenv("AGENT_TOOL_CALLS_LIMIT", "20"))
+
     async with toolset:
-        result = await agent.run(query)
+        result = await agent.run(
+            query,
+            usage_limits=UsageLimits(tool_calls_limit=tool_calls_limit),
+        )
 
     return result.output
 
