@@ -74,7 +74,7 @@ SYSTEM_PROMPT = """
 You are a supply chain disruption analyst. Your job is to assess risk on
 shipping routes by synthesizing data from multiple sources.
 
-When given a route (e.g. Shanghai to Rotterdam), follow this process:
+When given a route (e.g. Port A to Port B), follow this process:
 1. Use list_major_ports() to identify the chokepoints on the route (e.g. straits,
    canals). This is a reference lookup, not a checklist — do not call other
    tools for every port it returns.
@@ -120,6 +120,25 @@ def build_agent(toolset: MCPToolset) -> Agent:
 
 
 # ---------------------------------------------------------------------------
+# Route anchoring — guards against the model drifting onto the system
+# prompt's example route (or any other route) instead of the one asked for.
+# Fetched via an MCP tool call rather than importing tools.repository
+# directly, so agent.py stays a protocol-only client (see module docstring).
+# ---------------------------------------------------------------------------
+
+async def _named_ports(toolset: MCPToolset, query: str) -> list[str]:
+    """Ports from the server's own port list that are named in the query."""
+    result = await toolset.direct_call_tool("list_major_ports", {})
+    query_lower = query.lower()
+    matched = []
+    for p in result.get("ports", []):
+        name = p["name"].split("(")[0].strip()
+        if name and name.lower() in query_lower:
+            matched.append(name)
+    return matched
+
+
+# ---------------------------------------------------------------------------
 # Runner
 # ---------------------------------------------------------------------------
 
@@ -134,12 +153,34 @@ async def run_query(query: str) -> str:
     tool_calls_limit = int(os.getenv("AGENT_TOOL_CALLS_LIMIT", "20"))
 
     async with toolset:
+        ports = await _named_ports(toolset, query)
+        effective_query = query
+        if ports:
+            effective_query = (
+                f"{query}\n\n"
+                f"Confirmed route ports: {', '.join(ports)}. Use only these as "
+                f"the origin/destination/waypoints for this assessment — do not "
+                f"substitute any other ports or route."
+            )
+
         result = await agent.run(
-            query,
+            effective_query,
             usage_limits=UsageLimits(tool_calls_limit=tool_calls_limit),
         )
 
-    return result.output
+    output = result.output
+
+    if ports:
+        missing = [p for p in ports if p.lower() not in output.lower()]
+        if missing:
+            output = (
+                f"⚠ This assessment may not reflect the requested route — "
+                f"expected to see {', '.join(missing)} but didn't find "
+                f"{'it' if len(missing) == 1 else 'them'} in the answer below. "
+                f"Please verify manually.\n\n" + output
+            )
+
+    return output
 
 
 async def main() -> None:
