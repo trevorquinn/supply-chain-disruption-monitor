@@ -25,6 +25,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Windows consoles default to cp1252, which can't encode the em-dash and other
+# non-ASCII characters this script prints. Force UTF-8 output where supported.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 from pydantic_ai import Agent
 from pydantic_ai.models.openai import OpenAIChatModel
 from pydantic_ai.providers.openai import OpenAIProvider

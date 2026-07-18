@@ -22,6 +22,12 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+# Windows consoles default to cp1252, which can't encode the box-drawing and
+# em-dash characters this script prints. Force UTF-8 output where supported.
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
+    sys.stderr.reconfigure(encoding="utf-8")
+
 
 def _print_section(title: str) -> None:
     print(f"\n{'─'*70}")
