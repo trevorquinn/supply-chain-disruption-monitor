@@ -133,17 +133,15 @@ async def get_vessel_positions(region: str, max_vessels: int = 20) -> dict:
     Uses AISStream.io free WebSocket feed (requires AISSTREAM_API_KEY in .env).
     Listens for ~8 seconds and returns a snapshot of vessels in the region.
 
-    Key regions for the Shanghai → Rotterdam route:
-      - "South China Sea" (departure zone)
-      - "Strait of Malacca" (chokepoint)
-      - "Indian Ocean"
-      - "Red Sea" (Houthi threat zone)
-      - "Suez Canal" (chokepoint)
-      - "Mediterranean"
-      - "English Channel" / "North Sea" (arrival zone)
+    Named regions this tool recognizes (not specific to any one route — use
+    whichever apply to the route you're assessing):
+      "South China Sea", "East China Sea", "Strait of Malacca",
+      "Indian Ocean", "Red Sea", "Suez Canal", "Persian Gulf",
+      "Mediterranean", "English Channel", "North Sea", "Taiwan Strait",
+      "East Asia", "Northwest Europe", "North America West", "North America East"
 
     Args:
-        region: Named region — see key regions above or call list_major_ports() for context
+        region: Named region — see list above, or call list_major_ports() for context
         max_vessels: Maximum vessels to return (default 20)
 
     Returns:
@@ -173,11 +171,11 @@ async def search_disruption_news(query: str, days: int = 7) -> dict:
     'filtered_out' fields in the response to see if/how this applied.
     Lead each query with the exact place name for the filter to engage.
 
-    Good queries for Shanghai → Rotterdam analysis:
-      - "Red Sea attack blockage"
-      - "Suez Canal disruption"
-      - "Shanghai port delay"
-      - "Strait of Malacca congestion"
+    Example query shapes — lead with the place actually relevant to *your*
+    route, not necessarily these:
+      - "<port name> port delay" (e.g. "Rotterdam port delay")
+      - "<region name> attack blockage" (e.g. "Red Sea attack blockage")
+      - "<region name> disruption" (e.g. "Suez Canal disruption")
       - "container shipping freight rates" (no location — not filtered)
 
     Args:
