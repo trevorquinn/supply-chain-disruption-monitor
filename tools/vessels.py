@@ -73,54 +73,62 @@ async def get_vessel_positions(region: str, max_vessels: int = 20, timeout_s: in
     seen_mmsi: set[str] = set()
 
     try:
-        async with websockets.connect(
+        ws = await websockets.connect(
             "wss://stream.aisstream.io/v0/stream",
             ping_interval=None,
             open_timeout=10,
-        ) as ws:
-            await ws.send(json.dumps(subscribe_msg))
-
-            deadline = asyncio.get_event_loop().time() + timeout_s
-            while len(vessels) < max_vessels:
-                remaining = deadline - asyncio.get_event_loop().time()
-                if remaining <= 0:
-                    break
-                try:
-                    raw = await asyncio.wait_for(ws.recv(), timeout=remaining)
-                except asyncio.TimeoutError:
-                    break
-
-                msg = json.loads(raw)
-                if msg.get("MessageType") != "PositionReport":
-                    continue
-
-                meta = msg.get("MetaData", {})
-                pos = msg.get("Message", {}).get("PositionReport", {})
-                mmsi = str(meta.get("MMSI", ""))
-                if mmsi in seen_mmsi:
-                    continue
-                seen_mmsi.add(mmsi)
-
-                vessels.append(
-                    {
-                        "mmsi": mmsi,
-                        "name": meta.get("ShipName", "Unknown").strip(),
-                        "lat": round(pos.get("Latitude", 0), 4),
-                        "lon": round(pos.get("Longitude", 0), 4),
-                        "speed_kn": round(pos.get("Sog", 0), 1),  # Speed over ground
-                        "course_deg": pos.get("Cog"),
-                        "heading_deg": pos.get("TrueHeading"),
-                        "nav_status": _nav_status(pos.get("NavigationalStatus", 0)),
-                        "time_utc": meta.get("time_utc"),
-                    }
-                )
-
+        )
     except (OSError, websockets.exceptions.WebSocketException) as exc:
         return {
             "error": f"WebSocket connection failed: {exc}",
             "region": region,
             "vessels": [],
         }
+
+    try:
+        await ws.send(json.dumps(subscribe_msg))
+
+        deadline = asyncio.get_event_loop().time() + timeout_s
+        while len(vessels) < max_vessels:
+            remaining = deadline - asyncio.get_event_loop().time()
+            if remaining <= 0:
+                break
+            try:
+                raw = await asyncio.wait_for(ws.recv(), timeout=remaining)
+            except (asyncio.TimeoutError, websockets.exceptions.ConnectionClosed):
+                # AISStream doesn't always complete a clean close handshake —
+                # treat a dropped connection the same as a timeout.
+                break
+
+            msg = json.loads(raw)
+            if msg.get("MessageType") != "PositionReport":
+                continue
+
+            meta = msg.get("MetaData", {})
+            pos = msg.get("Message", {}).get("PositionReport", {})
+            mmsi = str(meta.get("MMSI", ""))
+            if mmsi in seen_mmsi:
+                continue
+            seen_mmsi.add(mmsi)
+
+            vessels.append(
+                {
+                    "mmsi": mmsi,
+                    "name": meta.get("ShipName", "Unknown").strip(),
+                    "lat": round(pos.get("Latitude", 0), 4),
+                    "lon": round(pos.get("Longitude", 0), 4),
+                    "speed_kn": round(pos.get("Sog", 0), 1),  # Speed over ground
+                    "course_deg": pos.get("Cog"),
+                    "heading_deg": pos.get("TrueHeading"),
+                    "nav_status": _nav_status(pos.get("NavigationalStatus", 0)),
+                    "time_utc": meta.get("time_utc"),
+                }
+            )
+    finally:
+        try:
+            await ws.close()
+        except websockets.exceptions.WebSocketException:
+            pass
 
     # Simple speed-based summary
     underway = [v for v in vessels if v["speed_kn"] > 0.5]

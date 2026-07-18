@@ -166,19 +166,27 @@ async def search_disruption_news(query: str, days: int = 7) -> dict:
     Returns articles with a 'flagged_high_signal' list highlighting those
     mentioning strikes, storms, blockages, attacks, or sanctions.
 
+    If the query names a known port or shipping region, results are
+    filtered to articles that actually mention that place — this prevents
+    e.g. a Red Sea query returning unrelated Strait of Hormuz coverage just
+    because both mention "attack". Check the 'location_filter' and
+    'filtered_out' fields in the response to see if/how this applied.
+    Lead each query with the exact place name for the filter to engage.
+
     Good queries for Shanghai → Rotterdam analysis:
-      - "Red Sea shipping attack"
+      - "Red Sea attack blockage"
       - "Suez Canal disruption"
       - "Shanghai port delay"
-      - "Strait of Malacca"
-      - "container shipping freight rates"
+      - "Strait of Malacca congestion"
+      - "container shipping freight rates" (no location — not filtered)
 
     Args:
-        query: Search query string
+        query: Search query string, ideally leading with a specific place name
         days: Days back to search (default 7, max 30 on free tier)
 
     Returns:
-        dict with articles list and flagged_high_signal subset
+        dict with articles list, flagged_high_signal subset, and
+        location_filter/filtered_out showing whether results were filtered
     """
     return await _search_disruption_news(query, days=days)
 
